@@ -11,6 +11,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 import java.util.Arrays;
+import java.util.Date;
 
 @SpringBootApplication
 public class OfferServiceApplication {
@@ -36,6 +37,7 @@ public class OfferServiceApplication {
                       offerRepository.save(Offer.builder()
                                                 .description(x)
                                                 .merchant(merchant)
+                                                .expireDate(new Date())
                                                 .build());
                   });
             offerRepository.findAll()
