@@ -32,20 +32,10 @@ public class OfferGatewayController {
     @Autowired
     private OfferClient offerClient;
 
-    @Autowired
-    private EurekaClient discoveryClient;
-
     @GetMapping("/all")
     public Collection<Offer> getOfferDescriptions() {
-
-        final Application application = discoveryClient.getApplication("OFFER-SERVICE");
-        final InstanceInfo
-            instanceInfo =
-            application.getInstances()
-                       .get(0);
         final ParameterizedTypeReference<Resources<Offer>> resourcesParameterizedTypeReference = new ParameterizedTypeReference<Resources<Offer>>() {
         };
-        final String url = instanceInfo.getHomePageUrl() + "offer/v1";
         final ResponseEntity<Resources<Offer>>
             resposneEntity = this.restTemplate.exchange("http://OFFER-SERVICE:8025/offer/v1", HttpMethod.GET, null, resourcesParameterizedTypeReference);
         return resposneEntity.getBody().getContent();
