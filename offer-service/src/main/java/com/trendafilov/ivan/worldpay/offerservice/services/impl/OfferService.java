@@ -10,6 +10,7 @@ import com.trendafilov.ivan.worldpay.offerservice.entities.ProductItem;
 import com.trendafilov.ivan.worldpay.offerservice.enums.ErrorMessagesEnum;
 import com.trendafilov.ivan.worldpay.offerservice.exceptions.OfferServiceException;
 import com.trendafilov.ivan.worldpay.offerservice.mappers.MerchantMapper;
+import com.trendafilov.ivan.worldpay.offerservice.mappers.OfferMapper;
 import com.trendafilov.ivan.worldpay.offerservice.mappers.ProductItemMapper;
 import com.trendafilov.ivan.worldpay.offerservice.repositories.MerchantRepository;
 import com.trendafilov.ivan.worldpay.offerservice.repositories.OfferRepository;
@@ -34,18 +35,21 @@ public class OfferService implements IOfferService {
     private final ProductItemRepository productItemRepository;
     private final MerchantMapper merchantMapper;
     private final ProductItemMapper productItemMapper;
+    private final OfferMapper offerMapper;
 
     @Autowired
     public OfferService(final OfferRepository offerRepository,
                         final MerchantRepository merchantRepository,
                         final ProductItemRepository productItemRepository,
                         final MerchantMapper merchantMapper,
-                        final ProductItemMapper productItemMapper) {
+                        final ProductItemMapper productItemMapper,
+                        final OfferMapper offerMapper) {
         this.offerRepository = offerRepository;
         this.merchantRepository = merchantRepository;
         this.productItemRepository = productItemRepository;
         this.merchantMapper = merchantMapper;
         this.productItemMapper = productItemMapper;
+        this.offerMapper = offerMapper;
     }
 
     @Override
@@ -99,9 +103,8 @@ public class OfferService implements IOfferService {
                                productItemResponses.add(
                                    productItemMapper.convertProductItemToResponse(dbProductItem));
                            });
-        return OfferResponse.builder()
-                            .productItemResponses(productItemResponses)
-                            .merchantResponse(merchantMapper.convertMerchantToResponse(merchant))
-                            .build();
+        return offerMapper.convertFullOfferToResponse(savedOffer, productItemResponses,
+                                                      merchantMapper.convertMerchantToResponse(
+                                                          merchant));
     }
 }
