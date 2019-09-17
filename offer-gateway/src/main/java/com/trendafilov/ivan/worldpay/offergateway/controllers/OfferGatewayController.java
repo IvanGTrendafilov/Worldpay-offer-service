@@ -1,5 +1,10 @@
 package com.trendafilov.ivan.worldpay.offergateway.controllers;
 
+import com.netflix.appinfo.InstanceInfo;
+import com.netflix.discovery.DiscoveryClient;
+import com.netflix.discovery.EurekaClient;
+import com.netflix.discovery.shared.Application;
+import com.trendafilov.ivan.worldpay.offergateway.OfferClient;
 import com.trendafilov.ivan.worldpay.offergateway.dtos.Offer;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,12 +29,26 @@ public class OfferGatewayController {
     @LoadBalanced
     private RestTemplate restTemplate;
 
-    @GetMapping("/descriptions")
+    @Autowired
+    private OfferClient offerClient;
+
+    @Autowired
+    private EurekaClient discoveryClient;
+
+    @GetMapping("/all")
     public Collection<Offer> getOfferDescriptions() {
+
+        final Application application = discoveryClient.getApplication("OFFER-SERVICE");
+        final InstanceInfo
+            instanceInfo =
+            application.getInstances()
+                       .get(0);
         final ParameterizedTypeReference<Resources<Offer>> resourcesParameterizedTypeReference = new ParameterizedTypeReference<Resources<Offer>>() {
         };
+        final String url = instanceInfo.getHomePageUrl() + "offer/v1";
         final ResponseEntity<Resources<Offer>>
-            resposneEntity = this.restTemplate.exchange("http://offer-service:8025/offers", HttpMethod.GET, null, resourcesParameterizedTypeReference);
+            resposneEntity = this.restTemplate.exchange("http://OFFER-SERVICE:8025/offer/v1", HttpMethod.GET, null, resourcesParameterizedTypeReference);
         return resposneEntity.getBody().getContent();
+      //  return offerClient.findAllOffersInStore();
     }
 }
