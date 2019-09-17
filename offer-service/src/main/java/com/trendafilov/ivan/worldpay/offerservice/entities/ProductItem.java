@@ -32,6 +32,7 @@ public class ProductItem {
     @GeneratedValue
     private Long productItemId;
     private String productType;
+    private String productDescription;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
