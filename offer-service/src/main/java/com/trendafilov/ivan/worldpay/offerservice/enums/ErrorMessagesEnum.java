@@ -3,7 +3,8 @@ package com.trendafilov.ivan.worldpay.offerservice.enums;
 public enum ErrorMessagesEnum {
 
     MERCHANT_NOT_FOUND("Merchant not found!"),
-    PRICE_LESS_THAN_ZERO("Offer Price can not be less than 0!");
+    PRICE_LESS_THAN_ZERO("Offer Price can not be less than 0!"),
+    OFFER_NOT_FOUND("Offer not found!");
 
     private final String message;
 

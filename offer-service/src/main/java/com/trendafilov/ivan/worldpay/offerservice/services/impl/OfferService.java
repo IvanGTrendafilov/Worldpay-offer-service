@@ -6,9 +6,9 @@ import com.trendafilov.ivan.worldpay.offerservice.dtos.response.OfferResponse;
 import com.trendafilov.ivan.worldpay.offerservice.dtos.response.ProductItemResponse;
 import com.trendafilov.ivan.worldpay.offerservice.entities.Merchant;
 import com.trendafilov.ivan.worldpay.offerservice.entities.Offer;
+import com.trendafilov.ivan.worldpay.offerservice.enums.ErrorMessagesEnum;
 import com.trendafilov.ivan.worldpay.offerservice.enums.OfferStatus;
 import com.trendafilov.ivan.worldpay.offerservice.exceptions.OfferServiceException;
-import com.trendafilov.ivan.worldpay.offerservice.mappers.MerchantMapper;
 import com.trendafilov.ivan.worldpay.offerservice.mappers.OfferMapper;
 import com.trendafilov.ivan.worldpay.offerservice.repositories.OfferRepository;
 import com.trendafilov.ivan.worldpay.offerservice.services.IMerchantService;
@@ -16,11 +16,14 @@ import com.trendafilov.ivan.worldpay.offerservice.services.IOfferService;
 import com.trendafilov.ivan.worldpay.offerservice.services.IProductService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class OfferService implements IOfferService {
@@ -32,7 +35,6 @@ public class OfferService implements IOfferService {
 
     @Autowired
     public OfferService(final OfferRepository offerRepository,
-                        final MerchantMapper merchantMapper,
                         final OfferMapper offerMapper,
                         final MerchantService merchantService,
                         final IProductService productService) {
@@ -40,11 +42,6 @@ public class OfferService implements IOfferService {
         this.offerMapper = offerMapper;
         this.merchantService = merchantService;
         this.productService = productService;
-    }
-
-    @Override
-    public List<Offer> findAllOffersInStore() {
-        return offerRepository.findAll();
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -91,5 +88,33 @@ public class OfferService implements IOfferService {
                                        offerResponses.add(offerResponse);
                                    });
         return offerResponses;
+    }
+
+    @Override
+    public void cancelMerchantOffer(final String merchantId, final String offerId)
+        throws OfferServiceException {
+        final Merchant merchantByMerchantId = merchantService.findMerchantByMerchantId(merchantId);
+        long providedOfferId = 0L;
+        Offer offer = null;
+        try {
+            providedOfferId = Long.parseLong(offerId);
+            final Optional<Offer>
+                offerOptional =
+                offerRepository.findById(providedOfferId);
+            if (!offerOptional.isPresent()) {
+                throwOfferServiceException();
+            }
+            offer = offerOptional.get();
+        } catch (final NumberFormatException e) {
+            throwOfferServiceException();
+        }
+        offer.setStatus(OfferStatus.CANCELLED.toString());
+        offer.setExpireDate(new Date());
+        offerRepository.save(offer);
+    }
+
+    private void throwOfferServiceException() throws OfferServiceException {
+        throw new OfferServiceException(ErrorMessagesEnum.OFFER_NOT_FOUND.getMessage(),
+                                        HttpStatus.BAD_REQUEST.value());
     }
 }
