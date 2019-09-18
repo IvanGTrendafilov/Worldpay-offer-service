@@ -2,6 +2,7 @@ package com.trendafilov.ivan.worldpay.offerservice.services.impl;
 
 import com.trendafilov.ivan.worldpay.offerservice.dtos.requests.OfferRequest;
 import com.trendafilov.ivan.worldpay.offerservice.dtos.requests.ProductItemRequest;
+import com.trendafilov.ivan.worldpay.offerservice.dtos.response.MerchantResponse;
 import com.trendafilov.ivan.worldpay.offerservice.dtos.response.OfferResponse;
 import com.trendafilov.ivan.worldpay.offerservice.dtos.response.ProductItemResponse;
 import com.trendafilov.ivan.worldpay.offerservice.entities.Merchant;
@@ -58,9 +59,12 @@ public class OfferService implements IOfferService {
         final List<ProductItemResponse>
             productItemResponses =
             productService.saveProductItemsForOffer(offerDb, productItemRequests);
+        final MerchantResponse
+            merchantResponseByMerchantEntity =
+            merchantService.getMerchantResponseByMerchantEntity(
+                merchantByMerchantId);
         return offerMapper.convertFullOfferToResponse(savedOffer, productItemResponses,
-                                                      merchantService.getMerchantResponseByMerchantEntity(
-                                                          merchantByMerchantId));
+                                                      merchantResponseByMerchantEntity);
     }
 
     @Override
