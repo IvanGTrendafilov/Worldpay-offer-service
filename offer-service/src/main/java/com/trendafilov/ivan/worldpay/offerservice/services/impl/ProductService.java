@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService implements IProductService {
@@ -49,10 +50,11 @@ public class ProductService implements IProductService {
     public List<ProductItemResponse> getAllProductItemsResponsesForOffer(final Offer offer) {
         final List<ProductItem>
             allProductItemsByOffer = offer.getProductItems();
-        final List<ProductItemResponse> productItemResponses = new ArrayList<>();
-        allProductItemsByOffer.stream()
-                              .forEach(productItem -> productItemResponses.add(
-                                  productItemMapper.convertProductItemToResponse(productItem)));
-        return productItemResponses;
+        return allProductItemsByOffer.stream()
+                                     .map(
+                                         productItem -> productItemMapper.convertProductItemToResponse(
+                                             productItem))
+                                     .collect(
+                                         Collectors.toList());
     }
 }

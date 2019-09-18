@@ -1,5 +1,6 @@
 package com.trendafilov.ivan.worldpay.offerservice.services.impl;
 
+import com.trendafilov.ivan.worldpay.offerservice.dtos.requests.MerchantRequest;
 import com.trendafilov.ivan.worldpay.offerservice.dtos.response.MerchantResponse;
 import com.trendafilov.ivan.worldpay.offerservice.entities.Merchant;
 import com.trendafilov.ivan.worldpay.offerservice.enums.ErrorMessagesEnum;
@@ -8,11 +9,14 @@ import com.trendafilov.ivan.worldpay.offerservice.mappers.MerchantMapper;
 import com.trendafilov.ivan.worldpay.offerservice.repositories.MerchantRepository;
 import com.trendafilov.ivan.worldpay.offerservice.services.IMerchantService;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class MerchantService implements IMerchantService {
@@ -38,22 +42,49 @@ public class MerchantService implements IMerchantService {
                 merchantOptional =
                 merchantRepository.findById(providedMerchantId);
             if (!merchantOptional.isPresent()) {
-                return throwOfferServiceException();
+                return throwOfferServiceException(
+                    ErrorMessagesEnum.MERCHANT_NOT_FOUND.getMessage());
             }
             merchant = merchantOptional.get();
         } catch (final NumberFormatException e) {
-            throwOfferServiceException();
+            throwOfferServiceException(ErrorMessagesEnum.MERCHANT_NOT_FOUND.getMessage());
         }
         return merchant;
     }
 
-    private Merchant throwOfferServiceException() throws OfferServiceException {
-        throw new OfferServiceException(ErrorMessagesEnum.MERCHANT_NOT_FOUND.getMessage(),
+    private Merchant throwOfferServiceException(final String message) throws OfferServiceException {
+        throw new OfferServiceException(message,
                                         HttpStatus.BAD_REQUEST.value());
     }
 
     @Override
     public MerchantResponse getMerchantResponseByMerchantEntity(final Merchant merchant) {
+        return merchantMapper.convertMerchantToResponse(
+            merchant);
+    }
+
+    @Override
+    public List<MerchantResponse> getAllMerchants() {
+        final List<Merchant> allMerchants = merchantRepository.findAll();
+        return allMerchants.stream()
+                           .map(merchant -> getMerchantResponseByMerchantEntity(merchant))
+                           .collect(
+                               Collectors.toList());
+    }
+
+    @Override
+    public MerchantResponse createMerchantByMerchantRequest(final MerchantRequest merchantRequest)
+        throws OfferServiceException {
+        if (StringUtils.isEmpty(merchantRequest.getFirstName())) {
+            throwOfferServiceException(ErrorMessagesEnum.MERCHANT_NAME_EMPTY.getMessage());
+        }
+        if (StringUtils.isEmpty(merchantRequest.getDepartment())) {
+            throwOfferServiceException(ErrorMessagesEnum.MERCHANT_DEPARTMENT_EMPTY.getMessage());
+        }
+        Merchant
+            merchant =
+            merchantMapper.convertMerchantRequestToEntity(merchantRequest);
+        merchant = merchantRepository.save(merchant);
         return merchantMapper.convertMerchantToResponse(
             merchant);
     }
