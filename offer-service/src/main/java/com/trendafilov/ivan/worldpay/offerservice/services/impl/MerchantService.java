@@ -38,15 +38,18 @@ public class MerchantService implements IMerchantService {
                 merchantOptional =
                 merchantRepository.findById(providedMerchantId);
             if (!merchantOptional.isPresent()) {
-                throw new OfferServiceException(ErrorMessagesEnum.MERCHANT_NOT_FOUND.getMessage(),
-                                                HttpStatus.BAD_REQUEST.value());
+                return throwOfferServiceException();
             }
             merchant = merchantOptional.get();
         } catch (final NumberFormatException e) {
-            throw new OfferServiceException(ErrorMessagesEnum.MERCHANT_NOT_FOUND.getMessage(),
-                                            HttpStatus.BAD_REQUEST.value());
+            throwOfferServiceException();
         }
         return merchant;
+    }
+
+    private Merchant throwOfferServiceException() throws OfferServiceException {
+        throw new OfferServiceException(ErrorMessagesEnum.MERCHANT_NOT_FOUND.getMessage(),
+                                        HttpStatus.BAD_REQUEST.value());
     }
 
     @Override

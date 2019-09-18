@@ -16,7 +16,6 @@ import lombok.Data;
 public class OfferRequest {
 
     private String description;
-    private String status;
     private String currency;
     private BigDecimal price;
     private List<ProductItemRequest> productItemRequests;

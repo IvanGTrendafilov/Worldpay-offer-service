@@ -34,17 +34,25 @@ public class ProductService implements IProductService {
         final List<ProductItemResponse> productItemResponses = new ArrayList<>();
         productItemRequests.stream()
                            .forEach(productItemRequest -> {
-                               ProductItem dbProductItem = ProductItem.builder()
-                                                                      .productDescription(
-                                                                          productItemRequest.getProductDescription())
-                                                                      .productType(
-                                                                          productItemRequest.getProductType())
-                                                                      .offer(offer)
-                                                                      .build();
+                               ProductItem
+                                   dbProductItem =
+                                   productItemMapper.convertProductItemRequestToProductItemEntity(
+                                       productItemRequest, offer);
                                dbProductItem = productItemRepository.save(dbProductItem);
                                productItemResponses.add(
                                    productItemMapper.convertProductItemToResponse(dbProductItem));
                            });
+        return productItemResponses;
+    }
+
+    @Override
+    public List<ProductItemResponse> getAllProductItemsResponsesForOffer(final Offer offer) {
+        final List<ProductItem>
+            allProductItemsByOffer = offer.getProductItems();
+        final List<ProductItemResponse> productItemResponses = new ArrayList<>();
+        allProductItemsByOffer.stream()
+                              .forEach(productItem -> productItemResponses.add(
+                                  productItemMapper.convertProductItemToResponse(productItem)));
         return productItemResponses;
     }
 }

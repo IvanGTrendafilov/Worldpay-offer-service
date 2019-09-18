@@ -6,10 +6,15 @@ import com.trendafilov.ivan.worldpay.offerservice.dtos.requests.response.OfferRe
 import com.trendafilov.ivan.worldpay.offerservice.dtos.requests.response.ProductItemResponse;
 import com.trendafilov.ivan.worldpay.offerservice.entities.Merchant;
 import com.trendafilov.ivan.worldpay.offerservice.entities.Offer;
+import com.trendafilov.ivan.worldpay.offerservice.enums.ErrorMessagesEnum;
+import com.trendafilov.ivan.worldpay.offerservice.enums.OfferStatus;
+import com.trendafilov.ivan.worldpay.offerservice.exceptions.OfferServiceException;
 
 import org.apache.commons.lang.time.DateUtils;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -32,14 +37,20 @@ public class OfferMapper {
     }
 
     public Offer convertOfferRequestToJpaEntity(final OfferRequest offerRequest,
-                                                final Merchant merchant) {
+                                                final Merchant merchant)
+        throws OfferServiceException {
+        final BigDecimal price = offerRequest.getPrice();
+        if (price.intValue() < 0) {
+            throw new OfferServiceException(ErrorMessagesEnum.PRICE_LESS_THAN_ZERO.getMessage(),
+                                            HttpStatus.BAD_REQUEST.value());
+        }
         final Offer
             offer =
             Offer.builder()
                  .merchant(merchant)
                  .description(offerRequest.getDescription())
-                 .price(offerRequest.getPrice())
-                 .status(offerRequest.getStatus())
+                 .price(price)
+                 .status(OfferStatus.ACTIVE.toString())
                  .currency(offerRequest.getCurrency())
                  .expireDate(DateUtils.addDays(new Date(), 10))
                  .build();

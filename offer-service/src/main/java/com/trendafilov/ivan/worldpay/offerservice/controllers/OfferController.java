@@ -3,6 +3,7 @@ package com.trendafilov.ivan.worldpay.offerservice.controllers;
 import com.trendafilov.ivan.worldpay.offerservice.dtos.requests.OfferRequest;
 import com.trendafilov.ivan.worldpay.offerservice.dtos.requests.response.OfferResponse;
 import com.trendafilov.ivan.worldpay.offerservice.entities.Offer;
+import com.trendafilov.ivan.worldpay.offerservice.exceptions.OfferServiceException;
 import com.trendafilov.ivan.worldpay.offerservice.services.IOfferService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 import javax.validation.Valid;
 
@@ -44,19 +47,35 @@ public class OfferController {
     }
 
     @ApiOperation(
-        value = "Inser information for offer",
+        value = "Insert information for offer",
         consumes = MediaType.APPLICATION_JSON_VALUE,
         produces = MediaType.APPLICATION_JSON_VALUE,
-        notes = "Insert merchant offer for specific product items",
+        notes = "Insert merchant offer for specific product items. OfferServiceException is thrown when merchant is invalid",
         response = OfferResponse.class)
     @PostMapping(value = "/{merchantId}",
         produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity update(@PathVariable final String merchantId,
-                                 @Valid @RequestBody final OfferRequest offerRequest) {
+    public ResponseEntity insertOffer(@PathVariable final String merchantId,
+                                      @Valid @RequestBody final OfferRequest offerRequest)
+        throws OfferServiceException {
         final OfferResponse
             offerResponse =
             offerService.insertOfferForMerchant(merchantId, offerRequest);
         return new ResponseEntity<>(offerResponse, HttpStatus.OK);
+    }
+
+    @ApiOperation(
+        value = "Gert all active offers for merchant",
+        produces = MediaType.APPLICATION_JSON_VALUE,
+        notes = "Gert all active offers for merchant. OfferServiceException is thrown when merchant is invalid",
+        response = OfferResponse.class)
+    @GetMapping(value = "/{merchantId}",
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity getActiveOffers(@PathVariable final String merchantId)
+        throws OfferServiceException {
+        final List<OfferResponse>
+            activeOffersForMerchant =
+            offerService.getActiveOffersForMerchant(merchantId);
+        return new ResponseEntity<>(activeOffersForMerchant, HttpStatus.OK);
     }
 
 }

@@ -14,4 +14,6 @@ public interface IOfferService {
     OfferResponse insertOfferForMerchant(final String merchantId,
                                          final OfferRequest offerRequest) throws
                                                                           OfferServiceException;
+
+    List<OfferResponse> getActiveOffersForMerchant(String merchantId) throws OfferServiceException;
 }

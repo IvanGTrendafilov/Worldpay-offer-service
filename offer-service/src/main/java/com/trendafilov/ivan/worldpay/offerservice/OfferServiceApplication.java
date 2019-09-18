@@ -2,6 +2,7 @@ package com.trendafilov.ivan.worldpay.offerservice;
 
 import com.trendafilov.ivan.worldpay.offerservice.entities.Merchant;
 import com.trendafilov.ivan.worldpay.offerservice.entities.Offer;
+import com.trendafilov.ivan.worldpay.offerservice.enums.OfferStatus;
 import com.trendafilov.ivan.worldpay.offerservice.repositories.MerchantRepository;
 import com.trendafilov.ivan.worldpay.offerservice.repositories.OfferRepository;
 
@@ -38,6 +39,7 @@ public class OfferServiceApplication {
                                                 .description(x)
                                                 .merchant(merchant)
                                                 .expireDate(new Date())
+                                                .status(OfferStatus.ACTIVE.toString())
                                                 .build());
                   });
             offerRepository.findAll()

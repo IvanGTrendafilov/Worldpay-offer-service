@@ -10,4 +10,6 @@ public interface IProductService {
 
     List<ProductItemResponse> saveProductItemsForOffer(Offer offer,
                                                        List<ProductItemRequest> productItemRequests);
+
+    List<ProductItemResponse> getAllProductItemsResponsesForOffer(Offer offer);
 }
