@@ -1,6 +1,6 @@
 package com.trendafilov.ivan.worldpay.offerservice.exceptions;
 
-public class OfferServiceException extends RuntimeException {
+public class OfferServiceException extends Exception {
 
     private final Integer statusCode;
 
