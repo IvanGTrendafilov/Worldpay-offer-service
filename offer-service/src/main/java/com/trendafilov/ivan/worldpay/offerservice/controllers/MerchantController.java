@@ -52,7 +52,7 @@ public class MerchantController {
         final MerchantResponse
             merchantResponse =
             merchantService.createMerchantByMerchantRequest(merchantRequest);
-        return new ResponseEntity<>(merchantResponse, HttpStatus.OK);
+        return new ResponseEntity<>(merchantResponse, HttpStatus.CREATED);
     }
 
     @ApiOperation(

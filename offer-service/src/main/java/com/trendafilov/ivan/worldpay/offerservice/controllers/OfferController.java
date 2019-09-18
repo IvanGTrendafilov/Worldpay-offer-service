@@ -51,7 +51,7 @@ public class OfferController {
         final OfferResponse
             offerResponse =
             offerService.insertOfferForMerchant(merchantId, offerRequest);
-        return new ResponseEntity<>(offerResponse, HttpStatus.OK);
+        return new ResponseEntity<>(offerResponse, HttpStatus.CREATED);
     }
 
     @ApiOperation(
