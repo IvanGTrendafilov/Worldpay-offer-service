@@ -1,7 +1,7 @@
 package com.trendafilov.ivan.worldpay.offerservice.services;
 
 import com.trendafilov.ivan.worldpay.offerservice.dtos.requests.OfferRequest;
-import com.trendafilov.ivan.worldpay.offerservice.dtos.requests.response.OfferResponse;
+import com.trendafilov.ivan.worldpay.offerservice.dtos.response.OfferResponse;
 import com.trendafilov.ivan.worldpay.offerservice.entities.Offer;
 import com.trendafilov.ivan.worldpay.offerservice.exceptions.OfferServiceException;
 

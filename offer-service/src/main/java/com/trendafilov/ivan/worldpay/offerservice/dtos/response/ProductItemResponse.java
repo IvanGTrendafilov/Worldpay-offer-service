@@ -1,4 +1,4 @@
-package com.trendafilov.ivan.worldpay.offerservice.dtos.requests.response;
+package com.trendafilov.ivan.worldpay.offerservice.dtos.response;
 
 import lombok.Builder;
 import lombok.Data;

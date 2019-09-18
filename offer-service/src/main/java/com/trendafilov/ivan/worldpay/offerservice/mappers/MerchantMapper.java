@@ -1,6 +1,6 @@
 package com.trendafilov.ivan.worldpay.offerservice.mappers;
 
-import com.trendafilov.ivan.worldpay.offerservice.dtos.requests.response.MerchantResponse;
+import com.trendafilov.ivan.worldpay.offerservice.dtos.response.MerchantResponse;
 import com.trendafilov.ivan.worldpay.offerservice.entities.Merchant;
 
 import org.springframework.stereotype.Component;

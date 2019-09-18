@@ -1,7 +1,7 @@
 package com.trendafilov.ivan.worldpay.offerservice.mappers;
 
 import com.trendafilov.ivan.worldpay.offerservice.dtos.requests.ProductItemRequest;
-import com.trendafilov.ivan.worldpay.offerservice.dtos.requests.response.ProductItemResponse;
+import com.trendafilov.ivan.worldpay.offerservice.dtos.response.ProductItemResponse;
 import com.trendafilov.ivan.worldpay.offerservice.entities.Offer;
 import com.trendafilov.ivan.worldpay.offerservice.entities.ProductItem;
 

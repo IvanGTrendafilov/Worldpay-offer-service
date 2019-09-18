@@ -1,6 +1,6 @@
 package com.trendafilov.ivan.worldpay.offerservice.exceptions.handlers;
 
-import com.trendafilov.ivan.worldpay.offerservice.dtos.requests.response.ErrorResponse;
+import com.trendafilov.ivan.worldpay.offerservice.dtos.response.ErrorResponse;
 import com.trendafilov.ivan.worldpay.offerservice.exceptions.OfferServiceException;
 
 import org.springframework.http.HttpStatus;

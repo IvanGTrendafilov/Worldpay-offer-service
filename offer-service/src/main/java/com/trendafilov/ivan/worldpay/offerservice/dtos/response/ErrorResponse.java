@@ -1,4 +1,4 @@
-package com.trendafilov.ivan.worldpay.offerservice.dtos.requests.response;
+package com.trendafilov.ivan.worldpay.offerservice.dtos.response;
 
 import io.swagger.annotations.ApiModel;
 import lombok.Builder;

@@ -1,9 +1,9 @@
 package com.trendafilov.ivan.worldpay.offerservice.mappers;
 
 import com.trendafilov.ivan.worldpay.offerservice.dtos.requests.OfferRequest;
-import com.trendafilov.ivan.worldpay.offerservice.dtos.requests.response.MerchantResponse;
-import com.trendafilov.ivan.worldpay.offerservice.dtos.requests.response.OfferResponse;
-import com.trendafilov.ivan.worldpay.offerservice.dtos.requests.response.ProductItemResponse;
+import com.trendafilov.ivan.worldpay.offerservice.dtos.response.MerchantResponse;
+import com.trendafilov.ivan.worldpay.offerservice.dtos.response.OfferResponse;
+import com.trendafilov.ivan.worldpay.offerservice.dtos.response.ProductItemResponse;
 import com.trendafilov.ivan.worldpay.offerservice.entities.Merchant;
 import com.trendafilov.ivan.worldpay.offerservice.entities.Offer;
 import com.trendafilov.ivan.worldpay.offerservice.enums.ErrorMessagesEnum;

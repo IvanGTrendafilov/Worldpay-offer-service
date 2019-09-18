@@ -1,4 +1,4 @@
-package com.trendafilov.ivan.worldpay.offerservice.dtos.requests.response;
+package com.trendafilov.ivan.worldpay.offerservice.dtos.response;
 
 import java.math.BigDecimal;
 import java.util.Date;
