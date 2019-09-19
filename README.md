@@ -37,7 +37,7 @@ has expired users may cancel it.
 
 ### OfferServiceException is thrown for negative scenarios
 
-### There is Spring exception handler that handles all OfferServiceExceptions and build Error response with the specific HTTP status code for the scenario
+* There is Spring exception handler that handles all OfferServiceExceptions and build Error response with the specific HTTP status code for the scenario
 
 ### 3 Mappers that converts Request objects to JPA entities and JPA entities to Response objects
 
@@ -91,4 +91,103 @@ Below all the commands to clone, build and run the project with Maven and Java 1
     the embedded servlet container starts at http://localhost:8025
     Springfox Swagger documentation is available on http://localhost:8025/swagger-ui.html Every endpoint can be tested from there. There are examples in the UI
 
+## Running
+
+* GET /merchant/v1 Get all merchants
+Example Response Model:
+MerchantResponse{
+department	string
+firstName	string
+lastName	string
+merchantId	integer($int64)
+}
+
+* POST /merchant/v1 Insert merchant. OfferServiceException is thrown when first name or department is not provided.
+Example Request Model: 
+MerchantRequest{
+department	string
+firstName	string
+lastName	string
+}
+
+Example Response Model:
+MerchantResponse{
+department	string
+firstName	string
+lastName	string
+merchantId	integer($int64)
+}
+
+* GET /merchant/v1/{merchantId} Get merchant by Id. OfferServiceException is thrown when merchant is invalid
+Example Response Model: 
+MerchantResponse{
+department	string
+firstName	string
+lastName	string
+merchantId	integer($int64)
+}
+
+* GET /offer/v1/merchants/{merchantId} Gert all active offers for merchant. OfferServiceException is thrown when merchant is invalid
+Example Response JSON: 
+{
+  "currency": "string",
+  "description": "string",
+  "expireDate": "2019-09-19T20:50:44.353Z",
+  "merchantResponse": {
+    "department": "string",
+    "firstName": "string",
+    "lastName": "string",
+    "merchantId": 0
+  },
+  "offerId": 0,
+  "price": 0,
+  "productItemResponses": [
+    {
+      "productDescription": "string",
+      "productItemId": 0,
+      "productType": "string"
+    }
+  ],
+  "status": "string"
+}
+
+* POST /offer/v1/merchants/{merchantId} Insert merchant offer for specific product items. OfferServiceException is thrown when merchant is invalid
+Example Request JSON:
+{
+  "currency": "string",
+  "description": "string",
+  "price": 0,
+  "productItemRequests": [
+    {
+      "productDescription": "string",
+      "productType": "string"
+    }
+  ]
+}
+
+Example Response JSON:
+{
+  "currency": "string",
+  "description": "string",
+  "expireDate": "2019-09-19T20:52:26.388Z",
+  "merchantResponse": {
+    "department": "string",
+    "firstName": "string",
+    "lastName": "string",
+    "merchantId": 0
+  },
+  "offerId": 0,
+  "price": 0,
+  "productItemResponses": [
+    {
+      "productDescription": "string",
+      "productItemId": 0,
+      "productType": "string"
+    }
+  ],
+  "status": "string"
+}
+
+* PUT /offer/v1/merchants/{merchantId}/offers/{offerId} Cancel Merchant Offer. OfferServiceException is thrown when merchant OR offer is invalid
+Return ResponseEntity with status 204 ( No content )
 
