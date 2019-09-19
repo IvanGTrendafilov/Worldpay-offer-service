@@ -19,19 +19,22 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
+import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-//@WebMvcTest(controllers = MerchantController.class)
 public class MerchantControllerTest {
 
     @Autowired
@@ -62,19 +65,23 @@ public class MerchantControllerTest {
 
     @Test
     public void test_getAllMerchnats() throws Exception {
-//        final MerchantRequest merchantRequest = createMerchantRequest();
-//        mockMvc.perform(
-//            post(Constants.MERCHANT_CONTROLLER_URI).headers(getHttpHeaders())
-//                                                  .content(asJsonString(merchantRequest)))
-//               .andExpect(status().isCreated());
-//        final MerchantRequest merchantRequest = createMerchantRequest();
-//        performSaveMerchant(merchantRequest);
+        final MerchantResponse
+            merchantResponse =
+            getMerchantResponse(new Random().nextLong(), RandomStringUtils.random(5),
+                                RandomStringUtils.random(5), RandomStringUtils.random(
+                    5));
+        final List<MerchantResponse> merchantResponses = Arrays.asList(
+            merchantResponse);
+        when(merchantService.getAllMerchants()).thenReturn(merchantResponses);
         mockMvc.perform(get(TestConstants.MERCHANT_CONTROLLER_URI).headers(getHttpHeaders()))
                .andExpect(status().isOk())
-               .andDo(MockMvcResultHandlers.print());
-//               .andExpect(jsonPath("$[0].firstName", Is.is(merchantRequest.getFirstName())))
-//               .andExpect(jsonPath("$[0].lastName", Is.is(merchantRequest.getLastName())))
-//               .andExpect(jsonPath("$[0].firstName", Is.is(merchantRequest.getDepartment())));
+               .andDo(print())
+               .andExpect(jsonPath("$[0].merchantId",
+                                   is(merchantResponse.getMerchantId())))
+               .andExpect(jsonPath("$[0].firstName",
+                                   is(merchantResponse.getFirstName())))
+               .andExpect(jsonPath("$[0].lastName", is(merchantResponse.getLastName())))
+               .andExpect(jsonPath("$[0].department", is(merchantResponse.getDepartment())));
 
     }
 
@@ -82,27 +89,48 @@ public class MerchantControllerTest {
     public void test_getMerchantById() throws Exception {
         final Merchant
             merchant =
-            Merchant.builder()
-                    .merchantId(123L)
-                    .firstName(RandomStringUtils.random(5))
-                    .lastName(RandomStringUtils.random(5))
-                    .department(RandomStringUtils.random(5))
-                    .build();
-        when(merchantService.findMerchantByMerchantId("123"))
+            createMerchant();
+        when(merchantService.findMerchantByMerchantId(merchant.getMerchantId()
+                                                              .toString()))
             .thenReturn(merchant);
         final MerchantResponse
             merchantResponse =
-            MerchantResponse.builder()
-                            .merchantId(merchant.getMerchantId())
-                            .firstName(merchant.getFirstName())
-                            .department(merchant.getDepartment())
-                            .build();
+            getMerchantResponse(merchant.getMerchantId(), merchant.getFirstName(),
+                                merchant.getLastName(), merchant.getDepartment());
         when(merchantMapper.convertMerchantToResponse(merchant))
             .thenReturn(merchantResponse);
         mockMvc.perform(
-            get(TestConstants.MERCHANT_CONTROLLER_URI + "/123").headers(getHttpHeaders()))
+            get(TestConstants.MERCHANT_CONTROLLER_URI + "/" + merchant.getMerchantId()
+                                                                      .toString()).headers(
+                getHttpHeaders()))
                .andExpect(status().isOk())
-               .andDo(MockMvcResultHandlers.print());
+               .andDo(print())
+               .andExpect(jsonPath("$.merchantId",
+                                   is(merchantResponse.getMerchantId())))
+               .andExpect(jsonPath("$.firstName",
+                                   is(merchantResponse.getFirstName())))
+               .andExpect(jsonPath("$.lastName", is(merchantResponse.getLastName())))
+               .andExpect(jsonPath("$.department", is(merchantResponse.getDepartment())));
+    }
+
+    private MerchantResponse getMerchantResponse(final Long merchantId, final String firstName,
+                                                 final String lastName,
+                                                 final String department) {
+        return MerchantResponse.builder()
+                               .merchantId(merchantId)
+                               .firstName(firstName)
+                               .lastName(lastName)
+                               .department(department)
+                               .build();
+    }
+
+    private Merchant createMerchant() {
+        return Merchant.builder()
+                       .merchantId(new Random(0).nextLong())
+                       .firstName(RandomStringUtils.random(5))
+                       .lastName(RandomStringUtils.random(5))
+                       .department(RandomStringUtils.random(5))
+                       .build();
     }
 
     private MerchantRequest createMerchantRequest() {
