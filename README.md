@@ -94,6 +94,7 @@ Below all the commands to clone, build and run the project with Maven and Java 1
 ## Running
 
 * GET /merchant/v1 Get all merchants
+
 Example Response Model:
 MerchantResponse{
 department	string
@@ -103,6 +104,7 @@ merchantId	integer($int64)
 }
 
 * POST /merchant/v1 Insert merchant. OfferServiceException is thrown when first name or department is not provided.
+
 Example Request Model: 
 MerchantRequest{
 department	string
@@ -119,6 +121,7 @@ merchantId	integer($int64)
 }
 
 * GET /merchant/v1/{merchantId} Get merchant by Id. OfferServiceException is thrown when merchant is invalid
+
 Example Response Model: 
 MerchantResponse{
 department	string
@@ -128,6 +131,7 @@ merchantId	integer($int64)
 }
 
 * GET /offer/v1/merchants/{merchantId} Gert all active offers for merchant. OfferServiceException is thrown when merchant is invalid
+
 Example Response JSON: 
 {
   "currency": "string",
@@ -152,6 +156,7 @@ Example Response JSON:
 }
 
 * POST /offer/v1/merchants/{merchantId} Insert merchant offer for specific product items. OfferServiceException is thrown when merchant is invalid
+
 Example Request JSON:
 {
   "currency": "string",
