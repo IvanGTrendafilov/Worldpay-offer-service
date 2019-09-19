@@ -35,7 +35,7 @@ has expired users may cancel it.
 * Offer
 * ProductItem
 
-### All specific business scenarios throws OfferServiceException for negative scenarios
+### OfferServiceException is thrown for negative scenarios
 
 ### There is Spring exception handler that handles all OfferServiceExceptions and build Error response with the specific HTTP status code for the scenario
 
@@ -74,6 +74,21 @@ has expired users may cancel it.
     Mockito
     MockMvc
     
+## Prerequisites
 
+* java version "11.0.4" 2019-07-16 LTS Java(TM) SE Runtime Environment 18.9
+* IDEA or Eclipse IDE if you want to run build/run/debug source code easier
+* Maven for build project
+
+## Quickstart
+
+Below all the commands to clone, build and run the project with Maven and Java 11 JDK:
+
+    git clone https://github.com/IvanGTrendafilov/Worldpay-offer-service.git
+    cd offer-service
+    mvn clean install
+    java -jar target/offer-service-0.0.1-SNAPSHOT.jar
+    the embedded servlet container starts at http://localhost:8025
+    Springfox Swagger documentation is available on http://localhost:8025/swagger-ui.html Every endpoint can be tested from there. There are examples in the UI
 
 
