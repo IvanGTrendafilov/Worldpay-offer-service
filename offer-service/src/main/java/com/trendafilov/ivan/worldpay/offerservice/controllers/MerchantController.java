@@ -31,12 +31,14 @@ import io.swagger.annotations.ApiOperation;
 public class MerchantController {
 
     private final IMerchantService merchantService;
-    private MerchantMapper merchantMapper;
+    private final MerchantMapper merchantMapper;
 
     @Autowired
     public MerchantController(
-        final IMerchantService merchantService) {
+        final IMerchantService merchantService,
+        final MerchantMapper merchantMapper) {
         this.merchantService = merchantService;
+        this.merchantMapper = merchantMapper;
     }
 
     @ApiOperation(
