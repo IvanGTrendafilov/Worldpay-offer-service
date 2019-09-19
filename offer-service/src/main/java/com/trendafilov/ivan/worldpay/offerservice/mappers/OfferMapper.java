@@ -10,7 +10,7 @@ import com.trendafilov.ivan.worldpay.offerservice.enums.ErrorMessagesEnum;
 import com.trendafilov.ivan.worldpay.offerservice.enums.OfferStatus;
 import com.trendafilov.ivan.worldpay.offerservice.exceptions.OfferServiceException;
 
-import org.apache.commons.lang.time.DateUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
