@@ -5,6 +5,8 @@ import com.trendafilov.ivan.worldpay.offerservice.TestConstants;
 import com.trendafilov.ivan.worldpay.offerservice.dtos.requests.MerchantRequest;
 import com.trendafilov.ivan.worldpay.offerservice.dtos.response.MerchantResponse;
 import com.trendafilov.ivan.worldpay.offerservice.entities.Merchant;
+import com.trendafilov.ivan.worldpay.offerservice.enums.ErrorMessagesEnum;
+import com.trendafilov.ivan.worldpay.offerservice.exceptions.OfferServiceException;
 import com.trendafilov.ivan.worldpay.offerservice.mappers.MerchantMapper;
 import com.trendafilov.ivan.worldpay.offerservice.services.impl.MerchantService;
 
@@ -16,6 +18,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -83,6 +86,21 @@ public class MerchantControllerTest {
                .andExpect(jsonPath("$[0].lastName", is(merchantResponse.getLastName())))
                .andExpect(jsonPath("$[0].department", is(merchantResponse.getDepartment())));
 
+    }
+
+    @Test
+    public void test_getMerchantByIdWithInvalidId() throws Exception {
+        final Long merchantId = new Random().nextLong();
+        when(merchantService.findMerchantByMerchantId(merchantId
+                                                          .toString())).thenThrow(
+            new OfferServiceException(ErrorMessagesEnum.MERCHANT_NOT_FOUND.getMessage(),
+                                      HttpStatus.BAD_REQUEST.value()));
+        mockMvc.perform(
+            get(TestConstants.MERCHANT_CONTROLLER_URI + "/" + merchantId).headers(getHttpHeaders()))
+               .andExpect(status().isBadRequest())
+               .andExpect(
+                   jsonPath("$.message", is(ErrorMessagesEnum.MERCHANT_NOT_FOUND.getMessage())))
+               .andDo(print());
     }
 
     @Test

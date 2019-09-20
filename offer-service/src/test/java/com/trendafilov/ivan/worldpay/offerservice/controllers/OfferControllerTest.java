@@ -2,6 +2,7 @@ package com.trendafilov.ivan.worldpay.offerservice.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.trendafilov.ivan.worldpay.offerservice.TestConstants;
+import com.trendafilov.ivan.worldpay.offerservice.exceptions.OfferServiceException;
 import com.trendafilov.ivan.worldpay.offerservice.services.impl.OfferService;
 
 import org.junit.Test;
@@ -11,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -18,6 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.Arrays;
 import java.util.Random;
 
+import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -45,6 +48,21 @@ public class OfferControllerTest {
             put(TestConstants.OFFER_CONTROLLER_URI + "/" + "merchants/" + merchantId
                 + "/offers/" + offerId).headers(getHttpHeaders()))
                .andExpect(status().isNoContent())
+               .andDo(print());
+    }
+
+    @Test
+    public void test_cancelMerchantOfferWithInvalidMerchant() throws Exception {
+        final Long merchantId = new Random().nextLong();
+        final Long offerId = new Random().nextLong();
+        doThrow(new OfferServiceException(HttpStatus.BAD_REQUEST.value())).when(offerService)
+                                                                          .cancelMerchantOffer(
+                                                                              merchantId.toString(),
+                                                                              offerId.toString());
+        mockMvc.perform(
+            put(TestConstants.OFFER_CONTROLLER_URI + "/" + "merchants/" + merchantId
+                + "/offers/" + offerId).headers(getHttpHeaders()))
+               .andExpect(status().isBadRequest())
                .andDo(print());
     }
 
