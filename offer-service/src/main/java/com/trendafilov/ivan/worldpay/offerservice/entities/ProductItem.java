@@ -1,9 +1,5 @@
 package com.trendafilov.ivan.worldpay.offerservice.entities;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -37,7 +33,5 @@ public class ProductItem {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "offerId")
-    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "offerId")
-    @JsonIdentityReference(alwaysAsId = true)
     private Offer offer;
 }

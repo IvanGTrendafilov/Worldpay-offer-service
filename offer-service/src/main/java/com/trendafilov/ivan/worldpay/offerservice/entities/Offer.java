@@ -1,9 +1,5 @@
 package com.trendafilov.ivan.worldpay.offerservice.entities;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -44,8 +40,6 @@ public class Offer {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "merchantId")
-    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "merchantId")
-    @JsonIdentityReference(alwaysAsId = true)
     private Merchant merchant;
 
     @OneToMany(mappedBy = "offer", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
