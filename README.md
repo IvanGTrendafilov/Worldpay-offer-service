@@ -120,7 +120,7 @@ lastName	string
 merchantId	integer($int64)
 }
 
-* GET /merchant/v1/{merchantId} Get merchant by Id. OfferServiceException is thrown when merchant is invalid
+* GET /merchant/v1/{merchantId} Get merchant by Id. OfferServiceException is thrown when merchant is invalid.
 
 Example Response Model: 
 MerchantResponse{
