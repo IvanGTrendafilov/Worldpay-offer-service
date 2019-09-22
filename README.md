@@ -77,7 +77,7 @@ has expired users may cancel it.
 ## Prerequisites
 
 * java version "11.0.4" 2019-07-16 LTS Java(TM) SE Runtime Environment 18.9
-* IDEA or Eclipse IDE if you want to run build/run/debug source code easier
+* IDEA or Eclipse IDE if you want to run build/run/debug source code easier ( Consider that source code will not compile in IDE because need lombok plugin https://www.baeldung.com/lombok-ide )
 * Maven for build project
 
 ## Quickstart
