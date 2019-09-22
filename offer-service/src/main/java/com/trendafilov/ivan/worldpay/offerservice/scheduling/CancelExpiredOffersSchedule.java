@@ -12,7 +12,10 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 import java.util.List;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Component
+@Slf4j
 public class CancelExpiredOffersSchedule {
 
     private final OfferRepository offerRepository;
@@ -41,7 +44,9 @@ public class CancelExpiredOffersSchedule {
                                                                             offer.getOfferId()
                                                                                  .toString());
                                        } catch (final OfferServiceException e) {
-                                           // Logger must be added here
+                                           log.error(
+                                               "OfferServiceException during cancel expired offers schedule with status code: {} and message: {}",
+                                               e.getStatusCode(), e.getMessage());
                                            e.printStackTrace();
                                        }
                                    });

@@ -2,7 +2,6 @@ package com.trendafilov.ivan.worldpay.offerservice.controllers;
 
 import com.trendafilov.ivan.worldpay.offerservice.dtos.requests.OfferRequest;
 import com.trendafilov.ivan.worldpay.offerservice.dtos.response.OfferResponse;
-import com.trendafilov.ivan.worldpay.offerservice.exceptions.OfferServiceException;
 import com.trendafilov.ivan.worldpay.offerservice.services.IOfferService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +22,12 @@ import javax.validation.Valid;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 
 @Api(value = "Offer")
 @RestController
 @RequestMapping("/offer/v1")
+@Slf4j
 public class OfferController {
 
     private final IOfferService offerService;
@@ -46,8 +47,9 @@ public class OfferController {
     @PostMapping(value = "merchants/{merchantId}",
         produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity insertOffer(@PathVariable final String merchantId,
-                                      @Valid @RequestBody final OfferRequest offerRequest)
-        throws OfferServiceException {
+                                      @Valid @RequestBody final OfferRequest offerRequest) {
+        log.info("Insert offer endpoint with merchant id: {} and OfferRequest Request body: {}",
+                 merchantId, offerRequest);
         final OfferResponse
             offerResponse =
             offerService.insertOfferForMerchant(merchantId, offerRequest);
@@ -61,8 +63,8 @@ public class OfferController {
         response = OfferResponse.class)
     @GetMapping(value = "merchants/{merchantId}",
         produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity getActiveOffers(@PathVariable final String merchantId)
-        throws OfferServiceException {
+    public ResponseEntity getActiveOffers(@PathVariable final String merchantId) {
+        log.info("Get all Offers for merchant with Id: {}", merchantId);
         final List<OfferResponse>
             activeOffersForMerchant =
             offerService.getActiveOffersForMerchant(merchantId);
@@ -75,8 +77,9 @@ public class OfferController {
         response = ResponseEntity.class)
     @PutMapping(value = "merchants/{merchantId}/offers/{offerId}")
     public ResponseEntity cancelMerchantOffer(@PathVariable final String merchantId,
-                                              @PathVariable final String offerId)
-        throws OfferServiceException {
+                                              @PathVariable final String offerId) {
+        log.info("Cancel merchant offer with merchant id: {} and Offer Id: {}", merchantId,
+                 offerId);
         offerService.cancelMerchantOffer(merchantId, offerId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

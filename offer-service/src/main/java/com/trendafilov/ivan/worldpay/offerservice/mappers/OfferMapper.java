@@ -18,7 +18,10 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Component
+@Slf4j
 public class OfferMapper {
 
     public OfferResponse convertFullOfferToResponse(final Offer offer,
@@ -41,6 +44,8 @@ public class OfferMapper {
         throws OfferServiceException {
         final BigDecimal price = offerRequest.getPrice();
         if (price.intValue() < 0) {
+            log.error("Merchant with id: {}", merchant.getMerchantId(),
+                      " trying to insert price less than zero");
             throw new OfferServiceException(ErrorMessagesEnum.PRICE_LESS_THAN_ZERO.getMessage(),
                                             HttpStatus.BAD_REQUEST.value());
         }

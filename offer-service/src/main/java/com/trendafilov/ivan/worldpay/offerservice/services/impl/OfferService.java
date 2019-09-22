@@ -26,6 +26,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class OfferService implements IOfferService {
 
@@ -50,6 +53,8 @@ public class OfferService implements IOfferService {
     public OfferResponse insertOfferForMerchant(final String merchantId,
                                                 final OfferRequest offerRequest)
         throws OfferServiceException {
+        log.debug("Insert Merchant Offer with MerchantId: {} and OfferRequest: {}", merchantId,
+                  offerRequest);
         final Merchant merchantByMerchantId = merchantService.findMerchantByMerchantId(merchantId);
         final Offer
             offerDb =
@@ -106,19 +111,31 @@ public class OfferService implements IOfferService {
                 offerOptional =
                 offerRepository.findById(providedOfferId);
             if (!offerOptional.isPresent()) {
-                throwOfferServiceException();
+                log.error("Offer with Id: {} for merchantId : {} was not found", offerId,
+                          merchantId);
+                throwOfferServiceException(ErrorMessagesEnum.OFFER_NOT_FOUND);
             }
             offer = offerOptional.get();
         } catch (final NumberFormatException e) {
-            throwOfferServiceException();
+            log.error("Random string {} is provided during cancel merchant offer", offerId);
+            throwOfferServiceException(ErrorMessagesEnum.OFFER_NOT_FOUND);
+        }
+        if (!merchantByMerchantId.getMerchantId()
+                                 .equals(offer.getMerchant()
+                                              .getMerchantId())) {
+            log.error("Wrong merchant with Id: {} trying to cancel offer with Id: {}", merchantId,
+                      offerId);
+            throwOfferServiceException(ErrorMessagesEnum.MERCHANT_DOES_NOT_OWN_OFFER);
         }
         offer.setStatus(OfferStatus.CANCELLED.toString());
         offer.setExpireDate(new Date());
         offerRepository.save(offer);
+        log.debug("Offer with Id: {} was canceled");
     }
 
-    private void throwOfferServiceException() throws OfferServiceException {
-        throw new OfferServiceException(ErrorMessagesEnum.OFFER_NOT_FOUND.getMessage(),
+    private void throwOfferServiceException(final ErrorMessagesEnum errorMessagesEnum)
+        throws OfferServiceException {
+        throw new OfferServiceException(errorMessagesEnum.getMessage(),
                                         HttpStatus.BAD_REQUEST.value());
     }
 }

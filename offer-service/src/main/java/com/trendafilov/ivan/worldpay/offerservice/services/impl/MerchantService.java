@@ -18,6 +18,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class MerchantService implements IMerchantService {
 
@@ -42,11 +45,14 @@ public class MerchantService implements IMerchantService {
                 merchantOptional =
                 merchantRepository.findById(providedMerchantId);
             if (!merchantOptional.isPresent()) {
+                log.error("findMerchantByMerchantId for merchantId : {} was not found",
+                          merchantId);
                 return throwOfferServiceException(
                     ErrorMessagesEnum.MERCHANT_NOT_FOUND.getMessage());
             }
             merchant = merchantOptional.get();
         } catch (final NumberFormatException e) {
+            log.error("Random string {} is provided during findMerchantByMerchantId", merchantId);
             throwOfferServiceException(ErrorMessagesEnum.MERCHANT_NOT_FOUND.getMessage());
         }
         return merchant;
@@ -76,9 +82,15 @@ public class MerchantService implements IMerchantService {
     public MerchantResponse createMerchantByMerchantRequest(final MerchantRequest merchantRequest)
         throws OfferServiceException {
         if (StringUtils.isEmpty(merchantRequest.getFirstName())) {
+            log.error(
+                "Merchant first name is not provided for createMerchantByMerchantRequest with MerchantRequest: {}",
+                merchantRequest);
             throwOfferServiceException(ErrorMessagesEnum.MERCHANT_NAME_EMPTY.getMessage());
         }
         if (StringUtils.isEmpty(merchantRequest.getDepartment())) {
+            log.error(
+                "Merchant department is not provided for createMerchantByMerchantRequest with MerchantRequest: {}",
+                merchantRequest);
             throwOfferServiceException(ErrorMessagesEnum.MERCHANT_DEPARTMENT_EMPTY.getMessage());
         }
         Merchant

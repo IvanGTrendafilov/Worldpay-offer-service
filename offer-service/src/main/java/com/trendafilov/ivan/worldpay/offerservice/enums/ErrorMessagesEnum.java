@@ -6,7 +6,8 @@ public enum ErrorMessagesEnum {
     PRICE_LESS_THAN_ZERO("Offer Price can not be less than 0!"),
     OFFER_NOT_FOUND("Offer not found!"),
     MERCHANT_NAME_EMPTY("Merchant name can not be empty!"),
-    MERCHANT_DEPARTMENT_EMPTY("Merchant department can not be empty!");
+    MERCHANT_DEPARTMENT_EMPTY("Merchant department can not be empty!"),
+    MERCHANT_DOES_NOT_OWN_OFFER("Merchant does not own such Offer!");
 
     private final String message;
 

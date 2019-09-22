@@ -147,16 +147,43 @@ public class OfferServiceTest {
         final Long merchantId = new Random().nextLong();
         final Long offerId = new Random().nextLong();
         final Merchant merchantMock = mock(Merchant.class);
-        final Optional<Offer> offerMock = Optional.of(mock(
-            Offer.class));
+        final Offer offer = mock(
+            Offer.class);
+        final Optional<Offer> offerOptional = Optional.of(offer);
         when(merchantService.findMerchantByMerchantId(merchantId.toString()))
             .thenReturn(merchantMock);
-        when(offerRepository.findById(anyLong())).thenReturn(offerMock);
+        when(offerRepository.findById(anyLong())).thenReturn(offerOptional);
+        when(offer.getMerchant()).thenReturn(merchantMock);
+        when(merchantMock.getMerchantId()).thenReturn(merchantId);
         // When
         offerService.cancelMerchantOffer(merchantId.toString(), offerId.toString());
         // Then
         verify(offerRepository, times(1)).findById(anyLong());
-        verify(offerRepository, times(1)).save(offerMock.get());
+        verify(offerRepository, times(1)).save(offerOptional.get());
+    }
+
+    @Test
+    public void test_cancelMerchantOfferWhenMerchantDoesNotOwnIt() throws OfferServiceException {
+        // Given
+        final String merchantId = RandomStringUtils.random(5);
+        final Long offerId = new Random().nextLong();
+        final Merchant merchantMock = mock(Merchant.class);
+        when(merchantService.findMerchantByMerchantId(merchantId))
+            .thenReturn(merchantMock);
+        final Offer offer = mock(Offer.class);
+        final Optional<Offer> offerOptional = Optional.ofNullable(offer);
+        when(offerRepository.findById(anyLong())).thenReturn(offerOptional);
+        when(offer.getMerchant()).thenReturn(merchantMock);
+        when(merchantMock.getMerchantId()).thenReturn(new Random().nextLong());
+        try {
+            // When
+            offerService.cancelMerchantOffer(merchantId, offerId.toString());
+        } catch (final OfferServiceException e) {
+            // Then
+            assertEquals(e.getMessage(),
+                         ErrorMessagesEnum.MERCHANT_DOES_NOT_OWN_OFFER.getMessage());
+            TestCase.assertTrue(e.getStatusCode() == HttpStatus.BAD_REQUEST.value());
+        }
     }
 
     @Test

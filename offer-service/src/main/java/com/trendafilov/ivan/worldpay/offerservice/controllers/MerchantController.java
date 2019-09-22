@@ -3,7 +3,6 @@ package com.trendafilov.ivan.worldpay.offerservice.controllers;
 import com.trendafilov.ivan.worldpay.offerservice.dtos.requests.MerchantRequest;
 import com.trendafilov.ivan.worldpay.offerservice.dtos.response.MerchantResponse;
 import com.trendafilov.ivan.worldpay.offerservice.entities.Merchant;
-import com.trendafilov.ivan.worldpay.offerservice.exceptions.OfferServiceException;
 import com.trendafilov.ivan.worldpay.offerservice.mappers.MerchantMapper;
 import com.trendafilov.ivan.worldpay.offerservice.services.IMerchantService;
 
@@ -24,7 +23,9 @@ import javax.validation.Valid;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Api(value = "Merchant Controller")
 @RestController
 @RequestMapping("/merchant/v1")
@@ -50,10 +51,12 @@ public class MerchantController {
     @PostMapping(
         produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity saveMerchant(
-        @Valid @RequestBody final MerchantRequest merchantRequest) throws OfferServiceException {
+        @Valid @RequestBody final MerchantRequest merchantRequest) {
+        log.info("Inside save merchant endpoint with Request body: {}", merchantRequest);
         final MerchantResponse
             merchantResponse =
             merchantService.createMerchantByMerchantRequest(merchantRequest);
+        log.info("Save merchant endpoint return Response body: {}", merchantResponse);
         return new ResponseEntity<>(merchantResponse, HttpStatus.CREATED);
     }
 
@@ -65,6 +68,7 @@ public class MerchantController {
     @GetMapping(
         produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity getAllMerchants() {
+        log.info("Inside get All merchants endpoint");
         final List<MerchantResponse> allMerchants = merchantService.getAllMerchants();
         return new ResponseEntity<>(allMerchants, HttpStatus.OK);
     }
@@ -76,8 +80,8 @@ public class MerchantController {
         response = MerchantResponse.class)
     @GetMapping(value = "/{merchantId}",
         produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity getMerchantById(@PathVariable final String merchantId)
-        throws OfferServiceException {
+    public ResponseEntity getMerchantById(@PathVariable final String merchantId) {
+        log.info("Inside get merchant by id endpoint with merchant id: {}", merchantId);
         final Merchant merchant = merchantService.findMerchantByMerchantId(merchantId);
         return new ResponseEntity<>(merchantMapper.convertMerchantToResponse(merchant),
                                     HttpStatus.OK);

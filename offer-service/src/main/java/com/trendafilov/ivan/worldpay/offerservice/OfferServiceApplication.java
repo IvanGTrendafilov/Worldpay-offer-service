@@ -32,6 +32,7 @@ public class OfferServiceApplication {
                 Merchant.builder()
                         .firstName("IVAN")
                         .lastName("TRENDAFILOV")
+                        .department("E-Commerce")
                         .build();
             merchantRepository.save(merchant);
             Arrays.asList("Description1, Description offer 2,description offer 3".split(","))
