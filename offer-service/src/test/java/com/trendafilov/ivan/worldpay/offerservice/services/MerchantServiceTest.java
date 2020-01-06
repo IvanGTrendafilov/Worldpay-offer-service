@@ -11,6 +11,7 @@ import com.trendafilov.ivan.worldpay.offerservice.services.impl.MerchantService;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -37,6 +38,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringJUnit4ClassRunner.class)
+@Ignore
 public class MerchantServiceTest {
 
     @Mock

@@ -7,7 +7,9 @@ public enum ErrorMessagesEnum {
     OFFER_NOT_FOUND("Offer not found!"),
     MERCHANT_NAME_EMPTY("Merchant name can not be empty!"),
     MERCHANT_DEPARTMENT_EMPTY("Merchant department can not be empty!"),
-    MERCHANT_DOES_NOT_OWN_OFFER("Merchant does not own such Offer!");
+    MERCHANT_DOES_NOT_OWN_OFFER("Merchant does not own such Offer!"),
+    STUDENT_NOT_FOUND("Student not found!"),
+    STUDENT_DOES_NOT_HAVE_SUCH_OFFER("Student does not have such Offer!");
 
     private final String message;
 

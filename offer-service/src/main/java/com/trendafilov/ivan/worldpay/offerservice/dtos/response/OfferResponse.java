@@ -18,5 +18,6 @@ public class OfferResponse {
     private String status;
     private String currency;
     private BigDecimal price;
+    private StudentResponse studentResponse;
     private List<ProductItemResponse> productItemResponses;
 }

@@ -2,6 +2,7 @@ package com.trendafilov.ivan.worldpay.offerservice.services;
 
 import com.trendafilov.ivan.worldpay.offerservice.dtos.requests.OfferRequest;
 import com.trendafilov.ivan.worldpay.offerservice.dtos.response.OfferResponse;
+import com.trendafilov.ivan.worldpay.offerservice.enums.OfferStatus;
 import com.trendafilov.ivan.worldpay.offerservice.exceptions.OfferServiceException;
 
 import java.util.List;
@@ -25,10 +26,12 @@ public interface IOfferService {
      * Get all active offers for merchant
      *
      * @param merchantId
+     * @param offerStatus
      * @return List of {@link OfferResponse}
      * @throws OfferServiceException If there isn't such merchant into database
      */
-    List<OfferResponse> getActiveOffersForMerchant(String merchantId) throws OfferServiceException;
+    List<OfferResponse> getOfferByMerchantAndStatus(String merchantId, String offerStatus)
+        throws OfferServiceException;
 
     /**
      * Makes an {@link com.trendafilov.ivan.worldpay.offerservice.entities.Offer} inactive
@@ -39,4 +42,7 @@ public interface IOfferService {
      *                               offer into db
      */
     void cancelMerchantOffer(String merchantId, String offerId) throws OfferServiceException;
+
+    void changeOfferStatusForStudent(String studentId, String offerId,
+                                     OfferStatus offerStatus);
 }

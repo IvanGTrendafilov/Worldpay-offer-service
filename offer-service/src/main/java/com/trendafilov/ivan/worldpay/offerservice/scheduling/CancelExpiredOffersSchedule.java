@@ -29,7 +29,11 @@ public class CancelExpiredOffersSchedule {
         this.offerService = offerService;
     }
 
-    @Scheduled(fixedRate = 60000)
+    /**
+     * Schedule that checks for expired offers Every day at 1am.  fixedRate = 60000 means every
+     * minute
+     */
+    @Scheduled(cron = "0 0 1 * * ?")
     public void cancelExpiredOffersSchedule() {
         final List<Offer>
             allWithExpireDateBefore =

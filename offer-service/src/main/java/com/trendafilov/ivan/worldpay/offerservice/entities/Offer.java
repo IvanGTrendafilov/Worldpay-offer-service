@@ -42,6 +42,10 @@ public class Offer {
     @JoinColumn(name = "merchantId")
     private Merchant merchant;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "studentId")
+    private Student student;
+
     @OneToMany(mappedBy = "offer", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<ProductItem> productItems;
 
@@ -52,6 +56,7 @@ public class Offer {
                ", description='" + description + '\'' +
                ", expireDate=" + expireDate +
                ", merchant=" + merchant.getMerchantId() +
+               ", student=" + student.getStudentId() +
                '}';
     }
 }

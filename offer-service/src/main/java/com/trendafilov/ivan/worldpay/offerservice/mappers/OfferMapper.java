@@ -4,6 +4,7 @@ import com.trendafilov.ivan.worldpay.offerservice.dtos.requests.OfferRequest;
 import com.trendafilov.ivan.worldpay.offerservice.dtos.response.MerchantResponse;
 import com.trendafilov.ivan.worldpay.offerservice.dtos.response.OfferResponse;
 import com.trendafilov.ivan.worldpay.offerservice.dtos.response.ProductItemResponse;
+import com.trendafilov.ivan.worldpay.offerservice.dtos.response.StudentResponse;
 import com.trendafilov.ivan.worldpay.offerservice.entities.Merchant;
 import com.trendafilov.ivan.worldpay.offerservice.entities.Offer;
 import com.trendafilov.ivan.worldpay.offerservice.enums.ErrorMessagesEnum;
@@ -26,7 +27,8 @@ public class OfferMapper {
 
     public OfferResponse convertFullOfferToResponse(final Offer offer,
                                                     final List<ProductItemResponse> productItemResponses,
-                                                    final MerchantResponse merchantResponse) {
+                                                    final MerchantResponse merchantResponse,
+                                                    final StudentResponse studentResponse) {
         return OfferResponse.builder()
                             .productItemResponses(productItemResponses)
                             .currency(offer.getCurrency())
@@ -36,6 +38,7 @@ public class OfferMapper {
                             .offerId(offer.getOfferId())
                             .price(offer.getPrice())
                             .status(offer.getStatus())
+                            .studentResponse(studentResponse)
                             .build();
     }
 

@@ -2,6 +2,7 @@ package com.trendafilov.ivan.worldpay.offerservice.controllers;
 
 import com.trendafilov.ivan.worldpay.offerservice.dtos.requests.OfferRequest;
 import com.trendafilov.ivan.worldpay.offerservice.dtos.response.OfferResponse;
+import com.trendafilov.ivan.worldpay.offerservice.enums.OfferStatus;
 import com.trendafilov.ivan.worldpay.offerservice.services.IOfferService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -57,17 +59,19 @@ public class OfferController {
     }
 
     @ApiOperation(
-        value = "Gert all active offers for merchant",
+        value = "Get all offers for merchant by specific status",
         produces = MediaType.APPLICATION_JSON_VALUE,
-        notes = "Gert all active offers for merchant. OfferServiceException is thrown when merchant is invalid",
+        notes = "Gert all offers for merchant for specific offer status. OfferServiceException is thrown when merchant is invalid",
         response = OfferResponse.class)
     @GetMapping(value = "merchants/{merchantId}",
         produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity getActiveOffers(@PathVariable final String merchantId) {
+    public ResponseEntity getOffersForMerchantByStatus(
+        @RequestHeader(name = "offer-status") final String offerStatus,
+        @PathVariable final String merchantId) {
         log.info("Get all Offers for merchant with Id: {}", merchantId);
         final List<OfferResponse>
             activeOffersForMerchant =
-            offerService.getActiveOffersForMerchant(merchantId);
+            offerService.getOfferByMerchantAndStatus(merchantId, offerStatus);
         return new ResponseEntity<>(activeOffersForMerchant, HttpStatus.OK);
     }
 
@@ -81,6 +85,32 @@ public class OfferController {
         log.info("Cancel merchant offer with merchant id: {} and Offer Id: {}", merchantId,
                  offerId);
         offerService.cancelMerchantOffer(merchantId, offerId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @ApiOperation(
+        value = "Accept Student offer",
+        notes = "Accept Student Offer. OfferServiceException is thrown when student/offer is invalid",
+        response = ResponseEntity.class)
+    @PutMapping(value = "students/{studentId}/offers/{offerId}/accept")
+    public ResponseEntity acceptStudentOffer(@PathVariable final String studentId,
+                                             @PathVariable final String offerId) {
+        log.info("Student accept offer offer with student id: {} and Offer Id: {}", studentId,
+                 offerId);
+        offerService.changeOfferStatusForStudent(studentId, offerId, OfferStatus.ACCEPTED);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @ApiOperation(
+        value = "Decline Student offer",
+        notes = "Decline Student Offer. OfferServiceException is thrown when student/offer is invalid",
+        response = ResponseEntity.class)
+    @PutMapping(value = "students/{studentId}/offers/{offerId}/decline")
+    public ResponseEntity declineStudentOffer(@PathVariable final String studentId,
+                                              @PathVariable final String offerId) {
+        log.info("Student accept offer offer with student id: {} and Offer Id: {}", studentId,
+                 offerId);
+        offerService.changeOfferStatusForStudent(studentId, offerId, OfferStatus.DECLINED);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

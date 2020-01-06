@@ -7,15 +7,19 @@ import com.trendafilov.ivan.worldpay.offerservice.dtos.response.OfferResponse;
 import com.trendafilov.ivan.worldpay.offerservice.dtos.response.ProductItemResponse;
 import com.trendafilov.ivan.worldpay.offerservice.entities.Merchant;
 import com.trendafilov.ivan.worldpay.offerservice.entities.Offer;
+import com.trendafilov.ivan.worldpay.offerservice.entities.Student;
 import com.trendafilov.ivan.worldpay.offerservice.enums.ErrorMessagesEnum;
 import com.trendafilov.ivan.worldpay.offerservice.enums.OfferStatus;
 import com.trendafilov.ivan.worldpay.offerservice.exceptions.OfferServiceException;
 import com.trendafilov.ivan.worldpay.offerservice.mappers.OfferMapper;
+import com.trendafilov.ivan.worldpay.offerservice.mappers.StudentMapper;
 import com.trendafilov.ivan.worldpay.offerservice.repositories.OfferRepository;
 import com.trendafilov.ivan.worldpay.offerservice.services.IMerchantService;
 import com.trendafilov.ivan.worldpay.offerservice.services.IOfferService;
 import com.trendafilov.ivan.worldpay.offerservice.services.IProductService;
+import com.trendafilov.ivan.worldpay.offerservice.services.IStudentService;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -36,16 +40,22 @@ public class OfferService implements IOfferService {
     private final OfferMapper offerMapper;
     private final IMerchantService merchantService;
     private final IProductService productService;
+    private final IStudentService studentService;
+    private final StudentMapper studentMapper;
 
     @Autowired
     public OfferService(final OfferRepository offerRepository,
                         final OfferMapper offerMapper,
                         final MerchantService merchantService,
-                        final IProductService productService) {
+                        final IProductService productService,
+                        final IStudentService studentService,
+                        final StudentMapper studentMapper) {
         this.offerRepository = offerRepository;
         this.offerMapper = offerMapper;
         this.merchantService = merchantService;
         this.productService = productService;
+        this.studentService = studentService;
+        this.studentMapper = studentMapper;
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -69,21 +79,31 @@ public class OfferService implements IOfferService {
             merchantService.getMerchantResponseByMerchantEntity(
                 merchantByMerchantId);
         return offerMapper.convertFullOfferToResponse(savedOffer, productItemResponses,
-                                                      merchantResponseByMerchantEntity);
+                                                      merchantResponseByMerchantEntity, null);
     }
 
     @Override
-    public List<OfferResponse> getActiveOffersForMerchant(final String merchantId)
+    public List<OfferResponse> getOfferByMerchantAndStatus(final String merchantId,
+                                                           final String offerStatus)
         throws OfferServiceException {
         final Merchant merchantByMerchantId = merchantService.findMerchantByMerchantId(merchantId);
         final List<Offer>
             offersByMerchantAnAndStatus =
             offerRepository.findOffersByMerchantMerchantIdAndStatus(
                 merchantByMerchantId.getMerchantId(),
-                OfferStatus.ACTIVE.toString());
+                offerStatus.toString());
         final List<OfferResponse> offerResponses = new ArrayList<>();
         offersByMerchantAnAndStatus.stream()
                                    .forEach(offer -> {
+                                       Student
+                                           studentByStudentId = null;
+                                       if (offer.getStudent() != null) {
+                                           studentByStudentId =
+                                               studentService.findStudentByStudentId(
+                                                   offer.getStudent()
+                                                        .getStudentId()
+                                                        .toString());
+                                       }
                                        final List<ProductItemResponse>
                                            allProductItemsResponsesForOffer =
                                            productService.getAllProductItemsResponsesForOffer(
@@ -93,7 +113,9 @@ public class OfferService implements IOfferService {
                                            offerMapper.convertFullOfferToResponse(offer,
                                                                                   allProductItemsResponsesForOffer,
                                                                                   merchantService.getMerchantResponseByMerchantEntity(
-                                                                                      merchantByMerchantId));
+                                                                                      merchantByMerchantId),
+                                                                                  studentMapper.convertStudentEntityToResponse(
+                                                                                      studentByStudentId));
                                        offerResponses.add(offerResponse);
                                    });
         return offerResponses;
@@ -103,23 +125,8 @@ public class OfferService implements IOfferService {
     public void cancelMerchantOffer(final String merchantId, final String offerId)
         throws OfferServiceException {
         final Merchant merchantByMerchantId = merchantService.findMerchantByMerchantId(merchantId);
-        long providedOfferId = 0L;
-        Offer offer = null;
-        try {
-            providedOfferId = Long.parseLong(offerId);
-            final Optional<Offer>
-                offerOptional =
-                offerRepository.findById(providedOfferId);
-            if (!offerOptional.isPresent()) {
-                log.error("Offer with Id: {} for merchantId : {} was not found", offerId,
-                          merchantId);
-                throwOfferServiceException(ErrorMessagesEnum.OFFER_NOT_FOUND);
-            }
-            offer = offerOptional.get();
-        } catch (final NumberFormatException e) {
-            log.error("Random string {} is provided during cancel merchant offer", offerId);
-            throwOfferServiceException(ErrorMessagesEnum.OFFER_NOT_FOUND);
-        }
+        final long providedOfferId = 0L;
+        final Offer offer = getOffer(merchantId, offerId);
         if (!merchantByMerchantId.getMerchantId()
                                  .equals(offer.getMerchant()
                                               .getMerchantId())) {
@@ -131,6 +138,55 @@ public class OfferService implements IOfferService {
         offer.setExpireDate(new Date());
         offerRepository.save(offer);
         log.debug("Offer with Id: {} was canceled");
+    }
+
+    private Offer getOffer(final String id, final String offerId) {
+        final long providedOfferId;
+        Offer offer = null;
+        try {
+            providedOfferId = Long.parseLong(offerId);
+            final Optional<Offer>
+                offerOptional =
+                offerRepository.findById(providedOfferId);
+            if (!offerOptional.isPresent()) {
+                log.error("Offer with Id: {} for id : {} was not found", offerId,
+                          id);
+                throwOfferServiceException(ErrorMessagesEnum.OFFER_NOT_FOUND);
+            }
+            offer = offerOptional.get();
+        } catch (final NumberFormatException e) {
+            log.error("Random string {} is provided during cancel merchant offer", offerId);
+            throwOfferServiceException(ErrorMessagesEnum.OFFER_NOT_FOUND);
+        }
+        return offer;
+    }
+
+    @Override
+    public void changeOfferStatusForStudent(final String studentId, final String offerId,
+                                            final OfferStatus offerStatus) {
+        final Student studentByStudentId = studentService.findStudentByStudentId(studentId);
+        final Offer offer = getOffer(studentId, offerId);
+        if (offer.getStudent() == null || !studentByStudentId.getStudentId()
+                                                             .equals(offer.getStudent()
+                                                                          .getStudentId())) {
+            log.error("Wrong student with Id: {} trying to accept offer with Id: {}", studentId,
+                      offerId);
+            throwOfferServiceException(ErrorMessagesEnum.STUDENT_DOES_NOT_HAVE_SUCH_OFFER);
+        }
+        offer.setStatus(offerStatus.toString());
+        switch (offerStatus) {
+            case ACTIVE:
+                offer.setExpireDate(DateUtils.addDays(new Date(), 10));
+                break;
+            case ACCEPTED:
+                offer.setExpireDate(DateUtils.addYears(new Date(), 5));
+                break;
+            case CANCELLED:
+            case DECLINED:
+                offer.setExpireDate(new Date());
+                break;
+        }
+        offerRepository.save(offer);
     }
 
     private void throwOfferServiceException(final ErrorMessagesEnum errorMessagesEnum)
