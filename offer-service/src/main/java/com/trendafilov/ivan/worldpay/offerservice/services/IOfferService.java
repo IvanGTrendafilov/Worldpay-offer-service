@@ -45,4 +45,9 @@ public interface IOfferService {
 
     void changeOfferStatusForStudent(String studentId, String offerId,
                                      OfferStatus offerStatus);
+
+    OfferResponse assignStudentToOffer(String studentId, String offerId,
+                                       String merchantId);
+
+    List<OfferResponse> getAllOffersToStudent(String studentId);
 }

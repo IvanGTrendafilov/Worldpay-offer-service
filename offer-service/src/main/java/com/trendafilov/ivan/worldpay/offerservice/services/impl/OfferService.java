@@ -189,6 +189,70 @@ public class OfferService implements IOfferService {
         offerRepository.save(offer);
     }
 
+    @Override
+    public OfferResponse assignStudentToOffer(final String studentId, final String offerId,
+                                              final String merchantId) {
+        final Student studentByStudentId = studentService.findStudentByStudentId(studentId);
+        final Offer offer = getOffer(studentId, offerId);
+        final List<Offer>
+            offersByStudentStudentIdAndStatus =
+            offerRepository.findOffersByStudentStudentIdAndStatus(Long.parseLong(studentId),
+                                                                  OfferStatus.ACCEPTED.toString());
+        if (!offersByStudentStudentIdAndStatus.isEmpty()) {
+            throwOfferServiceException(ErrorMessagesEnum.STUDENT_HAS_ACCEPTED_OFFER_ALREADY);
+        }
+        offer.setStudent(studentByStudentId);
+        offerRepository.save(offer);
+        final Merchant
+            merchantByMerchantId =
+            merchantService.findMerchantByMerchantId(merchantId);
+        final List<ProductItemResponse>
+            productItemResponses =
+            productService.getAllProductItemsResponsesForOffer(offer);
+        final MerchantResponse
+            merchantResponseByMerchantEntity =
+            merchantService.getMerchantResponseByMerchantEntity(
+                merchantByMerchantId);
+        return offerMapper.convertFullOfferToResponse(offer, productItemResponses,
+                                                      merchantResponseByMerchantEntity,
+                                                      studentMapper.convertStudentEntityToResponse(
+                                                          studentByStudentId));
+    }
+
+    @Override
+    public List<OfferResponse> getAllOffersToStudent(final String studentId) {
+        final Student studentByStudentId = studentService.findStudentByStudentId(studentId);
+        final List<Offer>
+            offers =
+            offerRepository.findOffersByStudentStudentId(studentByStudentId.getStudentId());
+        final List<OfferResponse> offerResponses = new ArrayList<>();
+        offers.stream()
+              .forEach(offer -> {
+                  Merchant
+                      merchantByMerchantId = null;
+                  if (offer.getMerchant() != null) {
+                      merchantByMerchantId =
+                          merchantService.findMerchantByMerchantId(offer.getMerchant()
+                                                                        .getMerchantId()
+                                                                        .toString());
+                  }
+                  final List<ProductItemResponse>
+                      allProductItemsResponsesForOffer =
+                      productService.getAllProductItemsResponsesForOffer(
+                          offer);
+                  final OfferResponse
+                      offerResponse =
+                      offerMapper.convertFullOfferToResponse(offer,
+                                                             allProductItemsResponsesForOffer,
+                                                             merchantService.getMerchantResponseByMerchantEntity(
+                                                                 merchantByMerchantId),
+                                                             studentMapper.convertStudentEntityToResponse(
+                                                                 studentByStudentId));
+                  offerResponses.add(offerResponse);
+              });
+        return offerResponses;
+    }
+
     private void throwOfferServiceException(final ErrorMessagesEnum errorMessagesEnum)
         throws OfferServiceException {
         throw new OfferServiceException(errorMessagesEnum.getMessage(),

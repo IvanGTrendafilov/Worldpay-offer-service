@@ -9,7 +9,8 @@ public enum ErrorMessagesEnum {
     MERCHANT_DEPARTMENT_EMPTY("Merchant department can not be empty!"),
     MERCHANT_DOES_NOT_OWN_OFFER("Merchant does not own such Offer!"),
     STUDENT_NOT_FOUND("Student not found!"),
-    STUDENT_DOES_NOT_HAVE_SUCH_OFFER("Student does not have such Offer!");
+    STUDENT_DOES_NOT_HAVE_SUCH_OFFER("Student does not have such Offer!"),
+    STUDENT_HAS_ACCEPTED_OFFER_ALREADY("Student has accepted Offer already");
 
     private final String message;
 

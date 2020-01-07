@@ -15,8 +15,11 @@ public interface OfferRepository extends JpaRepository<Offer, Long> {
 
     List<Offer> findOffersByMerchantMerchantIdAndStatus(Long merchantId, String status);
 
+    List<Offer> findOffersByStudentStudentIdAndStatus(Long studentId, String status);
+
     @Query("select a from Offer a where a.expireDate <= :newDate and a.status='ACTIVE'")
     List<Offer> findAllActiveWithExpireDateBefore(
         @Param("newDate") Date newDate);
 
+    List<Offer> findOffersByStudentStudentId(Long studentId);
 }

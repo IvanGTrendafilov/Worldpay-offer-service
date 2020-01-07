@@ -76,6 +76,22 @@ public class OfferController {
     }
 
     @ApiOperation(
+        value = "Get all offers to Student.",
+        produces = MediaType.APPLICATION_JSON_VALUE,
+        notes = "Gert all offers for Student. OfferServiceException is thrown when Student is invalid",
+        response = OfferResponse.class)
+    @GetMapping(value = "students/{studentId}",
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity getAllOffersToStudent(
+        @PathVariable final String studentId) {
+        log.info("Get all Offers for student with Id: {}", studentId);
+        final List<OfferResponse>
+            allOffersToStudent =
+            offerService.getAllOffersToStudent(studentId);
+        return new ResponseEntity<>(allOffersToStudent, HttpStatus.OK);
+    }
+
+    @ApiOperation(
         value = "Cancel Merchant offer",
         notes = "Cancel Merchant Offer. OfferServiceException is thrown when merchant/offer is invalid",
         response = ResponseEntity.class)
@@ -89,13 +105,29 @@ public class OfferController {
     }
 
     @ApiOperation(
+        value = "Assign Student to offer",
+        notes = "Assign Student to Offer. OfferServiceException is thrown when student/offer is invalid of Student has accepted Offer",
+        response = ResponseEntity.class)
+    @PutMapping(value = "merchants/{merchantId}/students/{studentId}/offers/{offerId}")
+    public ResponseEntity assignStudentToOffer(@PathVariable final String merchantId,
+                                               @PathVariable final String studentId,
+                                               @PathVariable final String offerId) {
+        log.info("Student assign to offer with student id: {} and Offer Id: {}", studentId,
+                 offerId);
+        final OfferResponse
+            offerResponse =
+            offerService.assignStudentToOffer(studentId, offerId, merchantId);
+        return new ResponseEntity<>(offerResponse, HttpStatus.OK);
+    }
+
+    @ApiOperation(
         value = "Accept Student offer",
         notes = "Accept Student Offer. OfferServiceException is thrown when student/offer is invalid",
         response = ResponseEntity.class)
     @PutMapping(value = "students/{studentId}/offers/{offerId}/accept")
     public ResponseEntity acceptStudentOffer(@PathVariable final String studentId,
                                              @PathVariable final String offerId) {
-        log.info("Student accept offer offer with student id: {} and Offer Id: {}", studentId,
+        log.info("Student accept offer with student id: {} and Offer Id: {}", studentId,
                  offerId);
         offerService.changeOfferStatusForStudent(studentId, offerId, OfferStatus.ACCEPTED);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
