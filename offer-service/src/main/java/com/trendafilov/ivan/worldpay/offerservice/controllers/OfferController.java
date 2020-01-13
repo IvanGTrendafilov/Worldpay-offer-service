@@ -61,7 +61,7 @@ public class OfferController {
     @ApiOperation(
         value = "Get all offers for merchant by specific status",
         produces = MediaType.APPLICATION_JSON_VALUE,
-        notes = "Gert all offers for merchant for specific offer status. OfferServiceException is thrown when merchant is invalid",
+        notes = "Get all offers for merchant for specific offer status. OfferServiceException is thrown when merchant is invalid",
         response = OfferResponse.class)
     @GetMapping(value = "merchants/{merchantId}",
         produces = MediaType.APPLICATION_JSON_VALUE)
@@ -78,7 +78,7 @@ public class OfferController {
     @ApiOperation(
         value = "Get all offers to Student.",
         produces = MediaType.APPLICATION_JSON_VALUE,
-        notes = "Gert all offers for Student. OfferServiceException is thrown when Student is invalid",
+        notes = "Get all offers for Student. OfferServiceException is thrown when Student is invalid",
         response = OfferResponse.class)
     @GetMapping(value = "students/{studentId}",
         produces = MediaType.APPLICATION_JSON_VALUE)

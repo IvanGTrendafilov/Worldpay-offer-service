@@ -104,21 +104,27 @@ public class OfferService implements IOfferService {
                                                         .getStudentId()
                                                         .toString());
                                        }
-                                       final List<ProductItemResponse>
-                                           allProductItemsResponsesForOffer =
-                                           productService.getAllProductItemsResponsesForOffer(
-                                               offer);
                                        final OfferResponse
                                            offerResponse =
-                                           offerMapper.convertFullOfferToResponse(offer,
-                                                                                  allProductItemsResponsesForOffer,
-                                                                                  merchantService.getMerchantResponseByMerchantEntity(
-                                                                                      merchantByMerchantId),
-                                                                                  studentMapper.convertStudentEntityToResponse(
-                                                                                      studentByStudentId));
+                                           getOfferResponse(merchantByMerchantId, offer,
+                                                            studentByStudentId);
                                        offerResponses.add(offerResponse);
                                    });
         return offerResponses;
+    }
+
+    private OfferResponse getOfferResponse(final Merchant merchantByMerchantId, final Offer offer,
+                                           final Student studentByStudentId) {
+        final List<ProductItemResponse>
+            allProductItemsResponsesForOffer =
+            productService.getAllProductItemsResponsesForOffer(
+                offer);
+        return offerMapper.convertFullOfferToResponse(offer,
+                                                      allProductItemsResponsesForOffer,
+                                                      merchantService.getMerchantResponseByMerchantEntity(
+                                                          merchantByMerchantId),
+                                                      studentMapper.convertStudentEntityToResponse(
+                                                          studentByStudentId));
     }
 
     @Override
@@ -236,18 +242,9 @@ public class OfferService implements IOfferService {
                                                                         .getMerchantId()
                                                                         .toString());
                   }
-                  final List<ProductItemResponse>
-                      allProductItemsResponsesForOffer =
-                      productService.getAllProductItemsResponsesForOffer(
-                          offer);
                   final OfferResponse
                       offerResponse =
-                      offerMapper.convertFullOfferToResponse(offer,
-                                                             allProductItemsResponsesForOffer,
-                                                             merchantService.getMerchantResponseByMerchantEntity(
-                                                                 merchantByMerchantId),
-                                                             studentMapper.convertStudentEntityToResponse(
-                                                                 studentByStudentId));
+                      getOfferResponse(merchantByMerchantId, offer, studentByStudentId);
                   offerResponses.add(offerResponse);
               });
         return offerResponses;
