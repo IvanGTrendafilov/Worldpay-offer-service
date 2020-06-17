@@ -30,6 +30,7 @@ public class Merchant {
     private String firstName;
     private String lastName;
     private String department;
+    private String avatar;
 
     @OneToMany(mappedBy = "merchant", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Offer> offers;

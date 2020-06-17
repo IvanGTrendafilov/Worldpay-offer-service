@@ -9,8 +9,10 @@ import com.trendafilov.ivan.worldpay.offerservice.mappers.MerchantMapper;
 import com.trendafilov.ivan.worldpay.offerservice.repositories.MerchantRepository;
 import com.trendafilov.ivan.worldpay.offerservice.services.IMerchantService;
 
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.convert.ReadingConverter;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -22,18 +24,11 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class MerchantService implements IMerchantService {
 
     private final MerchantRepository merchantRepository;
     private final MerchantMapper merchantMapper;
-
-    @Autowired
-    public MerchantService(
-        final MerchantRepository merchantRepository,
-        final MerchantMapper merchantMapper) {
-        this.merchantRepository = merchantRepository;
-        this.merchantMapper = merchantMapper;
-    }
 
     @Override
     public Merchant findMerchantByMerchantId(final String merchantId) throws OfferServiceException {

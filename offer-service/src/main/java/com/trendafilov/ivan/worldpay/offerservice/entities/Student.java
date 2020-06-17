@@ -32,6 +32,7 @@ public class Student {
     private String firstName;
     private String lastName;
     private String specialty;
+    private String avatar;
 
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Offer> offers;

@@ -19,6 +19,7 @@ import com.trendafilov.ivan.worldpay.offerservice.services.IOfferService;
 import com.trendafilov.ivan.worldpay.offerservice.services.IProductService;
 import com.trendafilov.ivan.worldpay.offerservice.services.IStudentService;
 
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,6 +35,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class OfferService implements IOfferService {
 
     private final OfferRepository offerRepository;
@@ -42,21 +44,6 @@ public class OfferService implements IOfferService {
     private final IProductService productService;
     private final IStudentService studentService;
     private final StudentMapper studentMapper;
-
-    @Autowired
-    public OfferService(final OfferRepository offerRepository,
-                        final OfferMapper offerMapper,
-                        final MerchantService merchantService,
-                        final IProductService productService,
-                        final IStudentService studentService,
-                        final StudentMapper studentMapper) {
-        this.offerRepository = offerRepository;
-        this.offerMapper = offerMapper;
-        this.merchantService = merchantService;
-        this.productService = productService;
-        this.studentService = studentService;
-        this.studentMapper = studentMapper;
-    }
 
     @Transactional(rollbackFor = Exception.class)
     @Override

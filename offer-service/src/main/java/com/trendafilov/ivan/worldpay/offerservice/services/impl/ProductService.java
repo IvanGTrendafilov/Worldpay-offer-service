@@ -8,6 +8,7 @@ import com.trendafilov.ivan.worldpay.offerservice.mappers.ProductItemMapper;
 import com.trendafilov.ivan.worldpay.offerservice.repositories.ProductItemRepository;
 import com.trendafilov.ivan.worldpay.offerservice.services.IProductService;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,18 +20,11 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class ProductService implements IProductService {
 
     private final ProductItemRepository productItemRepository;
     private final ProductItemMapper productItemMapper;
-
-    @Autowired
-    public ProductService(
-        final ProductItemRepository productItemRepository,
-        final ProductItemMapper productItemMapper) {
-        this.productItemRepository = productItemRepository;
-        this.productItemMapper = productItemMapper;
-    }
 
     @Override
     public List<ProductItemResponse> saveProductItemsForOffer(final Offer offer,

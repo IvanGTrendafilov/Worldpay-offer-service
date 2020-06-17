@@ -9,6 +9,7 @@ import com.trendafilov.ivan.worldpay.offerservice.mappers.StudentMapper;
 import com.trendafilov.ivan.worldpay.offerservice.repositories.StudentRepository;
 import com.trendafilov.ivan.worldpay.offerservice.services.IStudentService;
 
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,18 +23,11 @@ import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class StudentService implements IStudentService {
 
     private final StudentRepository studentRepository;
     private final StudentMapper studentMapper;
-
-    @Autowired
-    public StudentService(
-        final StudentRepository studentRepository,
-        final StudentMapper studentMapper) {
-        this.studentRepository = studentRepository;
-        this.studentMapper = studentMapper;
-    }
 
     @Override
     public List<StudentResponse> getAllStudents() {
