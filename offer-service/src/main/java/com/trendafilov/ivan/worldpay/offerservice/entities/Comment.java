@@ -28,8 +28,5 @@ public class Comment {
     private String comment;
     private String userName;
     private Date dateCreated;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "offerId")
-    private Offer offer;
+    private Long offerId;
 }

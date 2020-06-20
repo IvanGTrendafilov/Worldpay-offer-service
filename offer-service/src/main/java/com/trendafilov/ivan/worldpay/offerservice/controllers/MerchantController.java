@@ -6,6 +6,7 @@ import com.trendafilov.ivan.worldpay.offerservice.entities.Merchant;
 import com.trendafilov.ivan.worldpay.offerservice.mappers.MerchantMapper;
 import com.trendafilov.ivan.worldpay.offerservice.services.IMerchantService;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -29,18 +30,11 @@ import lombok.extern.slf4j.Slf4j;
 @Api(value = "Merchant Controller")
 @RestController
 @RequestMapping("/merchant/v1")
+@RequiredArgsConstructor
 public class MerchantController {
 
     private final IMerchantService merchantService;
     private final MerchantMapper merchantMapper;
-
-    @Autowired
-    public MerchantController(
-        final IMerchantService merchantService,
-        final MerchantMapper merchantMapper) {
-        this.merchantService = merchantService;
-        this.merchantMapper = merchantMapper;
-    }
 
     @ApiOperation(
         value = "Insert merchant",

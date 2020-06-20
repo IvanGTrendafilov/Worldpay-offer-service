@@ -1,5 +1,6 @@
 package com.trendafilov.ivan.worldpay.offerservice.services;
 
+import com.trendafilov.ivan.worldpay.offerservice.dtos.requests.CommentRequest;
 import com.trendafilov.ivan.worldpay.offerservice.dtos.requests.OfferRequest;
 import com.trendafilov.ivan.worldpay.offerservice.dtos.response.OfferResponse;
 import com.trendafilov.ivan.worldpay.offerservice.enums.OfferStatus;
@@ -20,7 +21,7 @@ public interface IOfferService {
      */
     OfferResponse insertOfferForMerchant(final String merchantId,
                                          final OfferRequest offerRequest) throws
-                                                                          OfferServiceException;
+            OfferServiceException;
 
     /**
      * Get all active offers for merchant
@@ -31,7 +32,7 @@ public interface IOfferService {
      * @throws OfferServiceException If there isn't such merchant into database
      */
     List<OfferResponse> getOfferByMerchantAndStatus(String merchantId, String offerStatus)
-        throws OfferServiceException;
+            throws OfferServiceException;
 
     /**
      * Makes an {@link com.trendafilov.ivan.worldpay.offerservice.entities.Offer} inactive
@@ -50,4 +51,6 @@ public interface IOfferService {
                                        String merchantId);
 
     List<OfferResponse> getAllOffersToStudent(String studentId);
+
+    void commentOffer(CommentRequest commentRequest, final String offerId);
 }

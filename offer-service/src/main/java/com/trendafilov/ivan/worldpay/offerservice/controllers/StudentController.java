@@ -6,6 +6,7 @@ import com.trendafilov.ivan.worldpay.offerservice.entities.Student;
 import com.trendafilov.ivan.worldpay.offerservice.mappers.StudentMapper;
 import com.trendafilov.ivan.worldpay.offerservice.services.IStudentService;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -29,18 +30,11 @@ import lombok.extern.slf4j.Slf4j;
 @Api(value = "Student Controller")
 @RestController
 @RequestMapping("/student/v1")
+@RequiredArgsConstructor
 public class StudentController {
 
     private final IStudentService studentService;
     private final StudentMapper studentMapper;
-
-    @Autowired
-    public StudentController(
-        final IStudentService studentService,
-        final StudentMapper studentMapper) {
-        this.studentService = studentService;
-        this.studentMapper = studentMapper;
-    }
 
     @ApiOperation(
         value = "Get all Students",

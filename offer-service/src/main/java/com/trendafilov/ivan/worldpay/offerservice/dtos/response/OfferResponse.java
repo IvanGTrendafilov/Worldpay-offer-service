@@ -1,11 +1,12 @@
 package com.trendafilov.ivan.worldpay.offerservice.dtos.response;
 
+import com.trendafilov.ivan.worldpay.offerservice.entities.Comment;
+import lombok.Builder;
+import lombok.Data;
+
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
-
-import lombok.Builder;
-import lombok.Data;
 
 @Data
 @Builder
@@ -20,4 +21,5 @@ public class OfferResponse {
     private BigDecimal price;
     private StudentResponse studentResponse;
     private List<ProductItemResponse> productItemResponses;
+    private List<Comment> commentResponses;
 }
